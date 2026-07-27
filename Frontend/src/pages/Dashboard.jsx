@@ -1,8 +1,41 @@
 import { Link } from "react-router-dom";
+import { useEffect, useMemo, useState } from "react";
 import useAuthRedirect from "../hooks/useAuthRedirect";
+import { getLeads } from "../services/leadService";
 
 const Dashboard = () => {
   useAuthRedirect();
+  const [leads, setLeads] = useState([]);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    const fetchLeads = async () => {
+      try {
+        const data = await getLeads();
+        setLeads(data);
+      } catch (err) {
+        setError("Unable to load leads for dashboard.");
+      }
+    };
+
+    fetchLeads();
+  }, []);
+
+  const stats = useMemo(() => {
+    const newLeads = leads.filter((lead) => lead.status === "New").length;
+    const contacted = leads.filter(
+      (lead) => lead.status === "Contacted",
+    ).length;
+    const qualified = leads.filter(
+      (lead) => lead.status === "Qualified",
+    ).length;
+
+    return {
+      newLeads,
+      contacted,
+      qualified,
+    };
+  }, [leads]);
 
   return (
     <div className="dashboard-page">
@@ -10,6 +43,7 @@ const Dashboard = () => {
         <div>
           <h1>Dashboard</h1>
           <p>Welcome back. Your CRM workspace is ready.</p>
+          {error && <p className="error">{error}</p>}
         </div>
         <Link to="/leads" className="primary-link">
           View Leads
@@ -19,15 +53,15 @@ const Dashboard = () => {
       <div className="stats-grid">
         <div className="stat-card">
           <h3>New Leads</h3>
-          <p>12</p>
+          <p>{stats.newLeads}</p>
         </div>
         <div className="stat-card">
           <h3>Contacted</h3>
-          <p>8</p>
+          <p>{stats.contacted}</p>
         </div>
         <div className="stat-card">
           <h3>Qualified</h3>
-          <p>5</p>
+          <p>{stats.qualified}</p>
         </div>
       </div>
 

@@ -4,6 +4,8 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Dashboard from "./pages/Dashboard";
 import Leads from "./pages/Leads";
+import Customers from "./pages/Customers";
+import Tasks from "./pages/Tasks";
 import Navbar from "./components/Navbar";
 import "./App.css";
 
@@ -27,6 +29,9 @@ function AppShell() {
         <Route path="/register" element={<Register />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/leads" element={<Leads />} />
+        <Route path="/customers" element={<Customers />} />
+        <Route path="/tasks" element={<Tasks />} />
+        <Route path="*" element={<Navigate to="/login" replace />} />
       </Routes>
     </>
   );
